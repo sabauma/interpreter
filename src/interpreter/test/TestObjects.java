@@ -1,22 +1,32 @@
 package interpreter.test;
 
 import static org.junit.Assert.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import interpreter.env.BuiltinFunctions;
 import interpreter.env.Environment;
 import interpreter.node.AppNode;
 import interpreter.node.LambdaNode;
 import interpreter.node.SchemeNode;
 import interpreter.node.QuoteNode;
+import interpreter.reader.Reader;
 import interpreter.types.SchemeInt;
 import interpreter.types.SchemeBoolean;
+import interpreter.types.SchemeObject;
 
 import org.junit.Test;
 
 public class TestObjects
 {
-	public final SchemeInt five       = new SchemeInt(5);
-	public final SchemeNode fiveNode  = new QuoteNode(five);
-	public final SchemeNode falseNode = new QuoteNode(SchemeBoolean.FALSE);
-	public final SchemeNode[] vals    = { fiveNode };
+	public static final SchemeInt five       = new SchemeInt(5);
+	public static final SchemeNode fiveNode  = new QuoteNode(five);
+	public static final SchemeNode falseNode = new QuoteNode(SchemeBoolean.FALSE);
+	public static final SchemeNode[] vals    = { fiveNode };
+	public static final String input         = "((lambda (x) (* (+ x x) x x)) 17)";
 	
 	@Test
 	public void testEvalNum()
@@ -38,5 +48,15 @@ public class TestObjects
 		SchemeNode m = new AppNode(n, vals);
 		assertEquals("#<procedure>", n.eval(Environment.EMPTY_ENV).toString());
 		assertEquals(five, m.eval(Environment.EMPTY_ENV));
+	}
+	
+	
+	@Test
+	public void testParsing() throws IOException
+	{
+		InputStream istream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+		SchemeObject n = Reader.readExpr(istream);
+		SchemeObject result = n.asCode().eval(BuiltinFunctions.BaseEnv);
+		assertTrue(result.equal(new SchemeInt(9826)));
 	}
 }

@@ -1,5 +1,8 @@
 package interpreter.types;
 
+import interpreter.node.SchemeNode;
+import interpreter.node.VarNode;
+
 import java.util.HashMap;
 
 public class SchemeSymbol extends SchemeObject
@@ -28,6 +31,11 @@ public class SchemeSymbol extends SchemeObject
 	private SchemeSymbol(String sym)
 	{
 		this.name = sym;
+	}
+	
+	public SchemeNode asCode()
+	{
+		return new VarNode(this.name);
 	}
 	
 	@Override

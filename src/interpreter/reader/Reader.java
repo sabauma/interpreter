@@ -22,6 +22,11 @@ public class Reader
 		return read(new PushbackReader(new InputStreamReader(istream)));
 	}
 	
+	public static SchemeObject readExpr(InputStream istream) throws IOException
+	{
+		return readNode(new PushbackReader(new InputStreamReader(istream)));
+	}
+	
 	private static SchemeObject read(PushbackReader pstream) throws IOException
 	{
 		List<SchemeObject> nodes = new ArrayList<SchemeObject>();

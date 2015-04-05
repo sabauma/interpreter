@@ -1,6 +1,9 @@
 package interpreter.types;
 
-public class SchemeFloat extends SchemeObject
+import interpreter.node.FloatNode;
+import interpreter.node.SchemeNode;
+
+public class SchemeFloat extends SchemeNumber
 {
 	private final double value;
 	
@@ -14,6 +17,11 @@ public class SchemeFloat extends SchemeObject
 		return Double.toString(this.value);
 	}
 
+	public SchemeNode asCode()
+	{
+		return new FloatNode(this.value);
+	}
+	
 	@Override
 	public boolean equal(SchemeObject obj)
 	{
@@ -22,5 +30,41 @@ public class SchemeFloat extends SchemeObject
 			return this.value == ((SchemeFloat) obj).value;
 		}
 		return false;
+	}
+
+	@Override
+	public SchemeNumber add(SchemeNumber other)
+	{
+		return other.addFloat(this.value);
+	}
+
+	@Override
+	public SchemeNumber mul(SchemeNumber other)
+	{
+		return other.mulFloat(this.value);
+	}
+
+	@Override
+	public SchemeNumber addInt(int val)
+	{
+		return new SchemeFloat(this.value + (double) val);
+	}
+
+	@Override
+	public SchemeNumber addFloat(double val)
+	{
+		return new SchemeFloat(this.value + val);
+	}
+
+	@Override
+	public SchemeNumber mulInt(int val)
+	{
+		return new SchemeFloat(this.value * (double) val);
+	}
+
+	@Override
+	public SchemeNumber mulFloat(double val)
+	{
+		return new SchemeFloat(this.value * val);
 	}
 }
