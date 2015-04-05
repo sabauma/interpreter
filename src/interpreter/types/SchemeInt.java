@@ -5,16 +5,16 @@ import interpreter.node.SchemeNode;
 
 public class SchemeInt extends SchemeNumber
 {
-	private final int value;
+	private final long value;
 	
-	public SchemeInt(int val)
+	public SchemeInt(long value)
 	{
-		this.value = val;
+		this.value = value;
 	}
 	
 	public String toString()
 	{
-		return Integer.toString(this.value);
+		return Long.toString(this.value);
 	}
 	
 	public SchemeNode asCode()
@@ -45,7 +45,7 @@ public class SchemeInt extends SchemeNumber
 	}
 
 	@Override
-	public SchemeNumber addInt(int val)
+	public SchemeNumber addInt(long val)
 	{
 		return new SchemeInt(this.value + val);
 	}
@@ -56,7 +56,7 @@ public class SchemeInt extends SchemeNumber
 	}
 
 	@Override
-	public SchemeNumber mulInt(int val)
+	public SchemeNumber mulInt(long val)
 	{
 		return new SchemeInt(this.value * val);
 	}

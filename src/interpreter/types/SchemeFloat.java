@@ -45,7 +45,7 @@ public class SchemeFloat extends SchemeNumber
 	}
 
 	@Override
-	public SchemeNumber addInt(int val)
+	public SchemeNumber addInt(long val)
 	{
 		return new SchemeFloat(this.value + (double) val);
 	}
@@ -57,7 +57,7 @@ public class SchemeFloat extends SchemeNumber
 	}
 
 	@Override
-	public SchemeNumber mulInt(int val)
+	public SchemeNumber mulInt(long val)
 	{
 		return new SchemeFloat(this.value * (double) val);
 	}

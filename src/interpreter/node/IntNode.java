@@ -6,9 +6,9 @@ import interpreter.types.SchemeObject;
 
 public class IntNode extends SchemeNode
 {
-	private final int value;
+	private final long value;
 	
-	public IntNode(int value)
+	public IntNode(long value)
 	{
 		this.value = value;
 	}

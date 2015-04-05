@@ -125,7 +125,7 @@ public class Reader
 		pstream.unread(c);
 		try
 		{
-			return new SchemeInt(Integer.valueOf(b.toString(), 10));
+			return new SchemeInt(Long.valueOf(b.toString(), 10));
 		}
 		catch (NumberFormatException nfe)
 		{
