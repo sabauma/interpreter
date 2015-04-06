@@ -21,15 +21,12 @@ public class SchemeInt extends SchemeNumber
 	{
 		return new IntNode(this.value);
 	}
-
+	
 	@Override
-	public boolean equal(SchemeObject obj)
+	public boolean equals(Object other)
 	{
-		if (obj instanceof SchemeInt)
-		{
-			return this.value == ((SchemeInt) obj).value;
-		}
-		return false;
+		return other instanceof SchemeInt
+			&& this.value == ((SchemeInt) other).value;
 	}
 
 	@Override

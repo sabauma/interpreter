@@ -50,13 +50,12 @@ public class TestObjects
 		assertEquals(five, m.eval(Environment.EMPTY_ENV));
 	}
 	
-	
 	@Test
 	public void testParsing() throws IOException
 	{
 		InputStream istream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
 		SchemeObject n = Reader.readExpr(istream);
 		SchemeObject result = n.asCode().eval(BuiltinFunctions.BaseEnv);
-		assertTrue(result.equal(new SchemeInt(9826)));
+		assertEquals(result, new SchemeInt(9826));
 	}
 }

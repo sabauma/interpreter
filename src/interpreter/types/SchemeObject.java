@@ -28,9 +28,4 @@ public abstract class SchemeObject implements Evaluatable
 	{
 		return new QuoteNode(this);
 	}
-	
-	public boolean equal(SchemeObject obj)
-	{
-		return this == obj;
-	}
 }

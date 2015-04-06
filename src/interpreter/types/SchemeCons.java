@@ -42,18 +42,18 @@ public class SchemeCons extends SchemeList
 		List<SchemeObject> view = this.arrayView();
 		SchemeObject car = this.car;
 		
-		if (car.equal(SchemeSymbol.QUOTE))
+		if (car.equals(SchemeSymbol.QUOTE))
 		{
 			assert view.size() == 2;
 			// parse quote
 			return new QuoteNode(view.get(1));
 		}
-		if (car.equal(SchemeSymbol.LET))
+		if (car.equals(SchemeSymbol.LET))
 		{
 			assert view.size() == 3;
 			// parse let
 		}
-		if (car.equal(SchemeSymbol.LAMBDA))
+		if (car.equals(SchemeSymbol.LAMBDA))
 		{
 			assert view.size() == 3;
 			// parse lambda
@@ -90,16 +90,12 @@ public class SchemeCons extends SchemeList
 		}
 		return retval;
 	}
-
-	@Override
-	public boolean equal(SchemeObject obj)
-	{
-		if (obj instanceof SchemeCons)
-		{
-			SchemeCons pair = (SchemeCons) obj;
-			return this.car.equal(pair.car) && this.cdr.equal(pair.cdr);
-		}
-		return false;
-	}
 	
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof SchemeCons
+			&& this.car.equals(((SchemeCons) obj).car)
+			&& this.cdr.equals(((SchemeCons) obj).cdr);
+	}
 }

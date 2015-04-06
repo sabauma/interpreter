@@ -13,7 +13,7 @@ import interpreter.reader.Reader;
 import interpreter.types.SchemeInt;
 import interpreter.types.SchemeObject;
 
-public class Main 
+public class Main
 {
 	public static String input = "((lambda (x) (* (+ x x) x x)) 17)";
 	public static void main(String[] args) throws IOException

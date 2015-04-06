@@ -20,11 +20,4 @@ public class SchemeNil extends SchemeList
 	{
 		return new ArrayList<SchemeObject>();
 	}
-
-	@Override
-	public boolean equal(SchemeObject obj)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
 }

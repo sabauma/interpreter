@@ -21,16 +21,6 @@ public class SchemeFloat extends SchemeNumber
 	{
 		return new FloatNode(this.value);
 	}
-	
-	@Override
-	public boolean equal(SchemeObject obj)
-	{
-		if (obj instanceof SchemeFloat)
-		{
-			return this.value == ((SchemeFloat) obj).value;
-		}
-		return false;
-	}
 
 	@Override
 	public SchemeNumber add(SchemeNumber other)

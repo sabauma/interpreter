@@ -40,10 +40,4 @@ public class SchemeClosure extends SchemeObject
 	{
 		return "#<procedure>";
 	}
-
-	@Override
-	public boolean equal(SchemeObject obj)
-	{
-		return this == obj;
-	}
 }

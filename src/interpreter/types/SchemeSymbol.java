@@ -37,14 +37,6 @@ public class SchemeSymbol extends SchemeObject
 	{
 		return new VarNode(this.name);
 	}
-	
-	@Override
-	public boolean equal(SchemeObject obj)
-	{
-		// Symbols are interned, so object identity is equality
-		// if I am doing everything correctly.
-		return this == obj;
-	}
 
 	public String toString()
 	{
