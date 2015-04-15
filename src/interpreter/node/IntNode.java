@@ -1,8 +1,6 @@
 package interpreter.node;
 
-import interpreter.env.Environment;
-import interpreter.types.SchemeInt;
-import interpreter.types.SchemeObject;
+import com.oracle.truffle.api.frame.VirtualFrame;
 
 public class IntNode extends SchemeNode
 {
@@ -14,9 +12,20 @@ public class IntNode extends SchemeNode
 	}
 	
 	@Override
-	public SchemeObject eval(Environment env)
+	public long executeLong(VirtualFrame env)
 	{
-		return new SchemeInt(this.value);
+		return this.value;
 	}
-
+	
+	@Override
+	public Object execute(VirtualFrame env)
+	{
+		return this.value;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "" + this.value;
+	}
 }

@@ -1,8 +1,6 @@
 package interpreter.node;
 
-import interpreter.env.Environment;
-import interpreter.types.SchemeFloat;
-import interpreter.types.SchemeObject;
+import com.oracle.truffle.api.frame.VirtualFrame;
 
 public class FloatNode extends SchemeNode
 {
@@ -14,8 +12,8 @@ public class FloatNode extends SchemeNode
 	}
 
 	@Override
-	public SchemeObject eval(Environment env)
+	public Object execute(VirtualFrame env)
 	{
-		return new SchemeFloat(this.value);
+		return this.value;
 	}
 }

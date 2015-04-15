@@ -1,25 +1,63 @@
 package interpreter.node;
 
-import interpreter.env.Environment;
-import interpreter.types.SchemeObject;
+import com.oracle.truffle.api.dsl.NodeChild;
+import com.oracle.truffle.api.dsl.NodeField;
+import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.frame.VirtualFrame;
+import interpreter.node.QuoteNode.QuoteKind;
 
-public class QuoteNode extends SchemeNode
+@NodeChild("literalNode")
+@NodeField(name = "kind", type = QuoteKind.class)
+public abstract class QuoteNode extends SchemeNode
 {
-	private final SchemeObject value;
-	
-	public QuoteNode(SchemeObject val)
+	public static enum QuoteKind
 	{
-		this.value = val;
+		LONG,
+		FLOAT,
+		BOOLEAN,
+		SYMBOL,
+		CONS,
+		NIL
 	}
 	
-	@Override
-	public SchemeObject eval(Environment env)
+	protected abstract QuoteKind getKind();
+	
+	@Specialization(guards = "isLongKind")
+	protected long quoteLong(VirtualFrame env, long value)
 	{
-		return this.value;
+		return value;
 	}
 	
-	public String toString()
+	@Specialization(guards = "isFloatKind")
+	protected double quoteFloat(VirtualFrame env, double value)
 	{
-		return "'" + this.value.toString();
+		return value;
+	}
+	
+	@Specialization(guards = "isBooleanKind")
+	protected boolean quoteBoolean(VirtualFrame env, boolean value)
+	{
+		return value;
+	}
+	
+	@Specialization(contains = {"quoteLong", "quoteFloat", "quoteBoolean"})
+	protected Object quote(VirtualFrame env, Object value)
+	{
+		return value;
+	}
+	
+	protected boolean isLongKind()
+	{
+		return this.getKind() == QuoteKind.LONG;
+	}
+	
+	protected boolean isBooleanKind()
+	{
+		return this.getKind() == QuoteKind.BOOLEAN;
+	}
+	
+	protected boolean isFloatKind()
+	{
+		return this.getKind() == QuoteKind.FLOAT;
 	}
 }

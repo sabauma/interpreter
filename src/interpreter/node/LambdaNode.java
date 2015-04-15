@@ -1,45 +1,76 @@
 package interpreter.node;
 
-import java.util.Arrays;
-import java.util.List;
+import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.dsl.NodeField;
+import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.RootNode;
 
-import interpreter.env.Environment;
 import interpreter.types.SchemeClosure;
-import interpreter.types.SchemeObject;
-import interpreter.types.SchemeSymbol;
 
-public class LambdaNode extends SchemeNode
+@NodeField(name = "function", type = SchemeClosure.class)
+public abstract class LambdaNode extends SchemeNode
 {
-	private final String[] formals;
-	private final SchemeNode body;
+	public abstract SchemeClosure getFunction();
 	
-	public LambdaNode(String[] formals, SchemeNode body)
+	private boolean scopeSet = false;
+	
+	@Specialization(guards = "isScopeSet")
+	public SchemeClosure getScopedFunction(VirtualFrame env)
 	{
-		this.formals = formals;
-		this.body    = body;
+		return this.getFunction();
 	}
 	
-	public LambdaNode(List<SchemeObject> formals, SchemeNode body)
+	@Specialization(contains = {"getScopedFunction"})
+	public Object getSchemeFunction(VirtualFrame env)
 	{
-		this.body = body;
-		String[] fmls = new String[formals.size()];
-		for (int i = 0; i < formals.size(); ++i)
-		{
-			fmls[i] = ((SchemeSymbol) formals.get(i)).toString();
-		}
-		this.formals = fmls;
+		SchemeClosure func = this.getFunction();
+		func.setLexicalScope(env.materialize());
+		return func;
 	}
 	
-	@Override
-	public SchemeObject eval(Environment env)
+	protected boolean isScopeSet()
 	{
-		return new SchemeClosure(this.formals, this.body, env);
+		return this.scopeSet;
 	}
 	
-	public String toString()
+	public static SchemeClosure createSchemeFunction(
+			RootNode rootNode, VirtualFrame currentFrame)
 	{
-		String args = Arrays.toString(this.formals).replace(", ", " ");
-		
-		return "(lambda (" + args.substring(1, args.length() - 1) + ") " + body.toString() + ")";
+		return new SchemeClosure(
+				Truffle.getRuntime().createCallTarget(rootNode));
 	}
+	
+//	private final String[] formals;
+//	private final SchemeNode body;
+//	
+//	public LambdaNode(String[] formals, SchemeNode body)
+//	{
+//		this.formals = formals;
+//		this.body    = body;
+//	}
+//	
+//	public LambdaNode(List<SchemeObject> formals, SchemeNode body)
+//	{
+//		this.body = body;
+//		String[] fmls = new String[formals.size()];
+//		for (int i = 0; i < formals.size(); ++i)
+//		{
+//			fmls[i] = ((SchemeSymbol) formals.get(i)).toString();
+//		}
+//		this.formals = fmls;
+//	}
+//	
+//	@Override
+//	public SchemeObject eval(Environment env)
+//	{
+//		return new SchemeClosure(this.formals, this.body, env);
+//	}
+//	
+//	public String toString()
+//	{
+//		String args = Arrays.toString(this.formals).replace(", ", " ");
+//		
+//		return "(lambda (" + args.substring(1, args.length() - 1) + ") " + body.toString() + ")";
+//	}
 }

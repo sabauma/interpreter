@@ -1,5 +1,7 @@
 package interpreter.node;
 
+import com.oracle.truffle.api.frame.VirtualFrame;
+
 import interpreter.env.Environment;
 import interpreter.types.SchemeObject;
 
@@ -18,14 +20,14 @@ public class LetNode extends SchemeNode
 	}
 	
 	@Override
-	public SchemeObject eval(Environment env)
+	public Object execute(VirtualFrame env)
 	{
-		Environment extended = new Environment(env);
+		VirtualFrame extended = new VirtualFrame();
 		for (int i = 0; i < this.lhss.length; ++i)
 		{
-			extended.extend(this.lhss[i], this.rhss[i].eval(env));
+			extended.extend(this.lhss[i], this.rhss[i].execute(env));
 		}
-		return this.body.eval(extended);
+		return this.body.execute(extended);
 	}
 	
 	public String toString()

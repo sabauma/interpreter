@@ -1,25 +1,75 @@
 package interpreter.node;
 
-import interpreter.env.Environment;
-import interpreter.types.SchemeObject;
+import com.oracle.truffle.api.dsl.NodeField;
+import com.oracle.truffle.api.dsl.Specialization;
+import com.oracle.truffle.api.frame.Frame;
+import com.oracle.truffle.api.frame.FrameSlot;
+import com.oracle.truffle.api.frame.FrameSlotTypeException;
+import com.oracle.truffle.api.frame.VirtualFrame;
 
-public class VarNode extends SchemeNode
+@NodeField(name = "slot", type = FrameSlot.class)
+public abstract class VarNode extends SchemeNode
 {
-	private final String name;
+	public abstract FrameSlot getSlot();
 	
-	public VarNode(String name)
+	public static interface FrameGet<T>
 	{
-		this.name = name;
+		public T get(Frame frame, FrameSlot slot)
+			throws FrameSlotTypeException;
 	}
-
-	@Override
-	public SchemeObject eval(Environment env)
+	
+	public <T> T readUpStack(FrameGet<T> getter, Frame frame)
+		throws FrameSlotTypeException
 	{
-		return env.lookup(this.name);
+		T value = getter.get(frame, this.getSlot());
+		while (value == null)
+		{
+			frame = this.getPreviousFrame(frame);
+			if (frame == null)
+			{
+				throw new RuntimeException("Unknown variable: " +
+						this.getSlot().getIdentifier());
+			}
+			value = getter.get(frame,  this.getSlot());
+		}
+		return value;
+	}
+	
+	@Specialization(rewriteOn = FrameSlotTypeException.class)
+	protected long readLong(VirtualFrame virtualFrame)
+		throws FrameSlotTypeException
+	{
+		return this.readUpStack(Frame::getLong, virtualFrame);
+	}
+	
+	@Specialization(rewriteOn = FrameSlotTypeException.class)
+	protected boolean readBoolean(VirtualFrame virtualFrame)
+		throws FrameSlotTypeException
+	{
+		return this.readUpStack(Frame::getBoolean, virtualFrame);
+	}
+	
+	@Specialization(contains = {"readLong", "readBoolean", "readObject"})
+	protected Object readObject(VirtualFrame virtualFrame)
+	{
+		try
+		{
+			return this.readUpStack(Frame::getValue, virtualFrame);
+		}
+		catch (FrameSlotTypeException e)
+		{
+			// This should never happen
+		}
+		return null;
+	}
+	
+	private Frame getPreviousFrame(Frame frame)
+	{
+		return (Frame) frame.getArguments()[0];
 	}
 	
 	public String toString()
 	{
-		return this.name;
+		return this.getSlot().getIdentifier().toString();
 	}
 }
