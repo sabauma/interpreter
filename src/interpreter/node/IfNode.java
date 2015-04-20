@@ -46,6 +46,12 @@ public class IfNode extends SchemeNode
 		}
 	}
 	
+	public void setIsTail()
+	{
+		this.thn.setIsTail();
+		this.alt.setIsTail();
+	}
+	
 	public String toString()
 	{
 		return "(if (" + this.tst.toString() + ") " 

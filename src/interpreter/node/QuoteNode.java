@@ -22,19 +22,19 @@ public abstract class QuoteNode extends SchemeNode
 	
 	protected abstract QuoteKind getKind();
 	
-	@Specialization(guards = "isLongKind")
+	@Specialization(guards = "isLongKind()")
 	protected long quoteLong(VirtualFrame env, long value)
 	{
 		return value;
 	}
 	
-	@Specialization(guards = "isFloatKind")
+	@Specialization(guards = "isFloatKind()")
 	protected double quoteFloat(VirtualFrame env, double value)
 	{
 		return value;
 	}
 	
-	@Specialization(guards = "isBooleanKind")
+	@Specialization(guards = "isBooleanKind()")
 	protected boolean quoteBoolean(VirtualFrame env, boolean value)
 	{
 		return value;

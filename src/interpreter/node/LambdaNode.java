@@ -15,7 +15,7 @@ public abstract class LambdaNode extends SchemeNode
 	
 	private boolean scopeSet = false;
 	
-	@Specialization(guards = "isScopeSet")
+	@Specialization(guards = "isScopeSet()")
 	public SchemeClosure getScopedFunction(VirtualFrame env)
 	{
 		return this.getFunction();
@@ -40,37 +40,4 @@ public abstract class LambdaNode extends SchemeNode
 		return new SchemeClosure(
 				Truffle.getRuntime().createCallTarget(rootNode));
 	}
-	
-//	private final String[] formals;
-//	private final SchemeNode body;
-//	
-//	public LambdaNode(String[] formals, SchemeNode body)
-//	{
-//		this.formals = formals;
-//		this.body    = body;
-//	}
-//	
-//	public LambdaNode(List<SchemeObject> formals, SchemeNode body)
-//	{
-//		this.body = body;
-//		String[] fmls = new String[formals.size()];
-//		for (int i = 0; i < formals.size(); ++i)
-//		{
-//			fmls[i] = ((SchemeSymbol) formals.get(i)).toString();
-//		}
-//		this.formals = fmls;
-//	}
-//	
-//	@Override
-//	public SchemeObject eval(Environment env)
-//	{
-//		return new SchemeClosure(this.formals, this.body, env);
-//	}
-//	
-//	public String toString()
-//	{
-//		String args = Arrays.toString(this.formals).replace(", ", " ");
-//		
-//		return "(lambda (" + args.substring(1, args.length() - 1) + ") " + body.toString() + ")";
-//	}
 }

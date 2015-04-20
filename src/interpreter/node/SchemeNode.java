@@ -8,6 +8,8 @@ import interpreter.types.SchemeCons;
 import interpreter.types.SchemeNil;
 
 import com.oracle.truffle.api.dsl.TypeSystemReference;
+import com.oracle.truffle.api.frame.Frame;
+import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.NodeInfo;
@@ -18,6 +20,8 @@ import com.oracle.truffle.api.nodes.UnexpectedResultException;
 public abstract class SchemeNode extends Node
 {
 	public abstract Object execute(VirtualFrame virtualFrame);
+	
+	public void setIsTail() { }
 	
 	public long executeLong(VirtualFrame virtualFrame)
 		throws UnexpectedResultException
@@ -50,5 +54,25 @@ public abstract class SchemeNode extends Node
 	{
 		return SchemeTypesGen.SCHEMETYPES.expectSchemeNil(
 				this.execute(virtualFrame));
+	}
+	
+	protected boolean isArgumentIndexInRange(VirtualFrame env, int index)
+	{
+		return index < env.getArguments().length - 1;
+	}
+	
+	protected Object getArgument(VirtualFrame env, int index)
+	{
+		return env.getArguments()[index + 1];
+	}
+	
+	protected static MaterializedFrame getLexicalScope(Frame frame)
+	{
+		Object[] args = frame.getArguments();
+		if (args.length > 0)
+		{
+			return (MaterializedFrame) frame.getArguments()[0];
+		}
+		return null;
 	}
 }

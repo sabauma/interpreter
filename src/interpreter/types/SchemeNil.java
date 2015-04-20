@@ -16,8 +16,8 @@ public class SchemeNil extends SchemeList
 	}
 
 	@Override
-	public List<SchemeObject> arrayView()
+	public List<Object> arrayView()
 	{
-		return new ArrayList<SchemeObject>();
+		return new ArrayList<Object>();
 	}
 }

@@ -49,8 +49,15 @@ public abstract class VarNode extends SchemeNode
 		return this.readUpStack(Frame::getBoolean, virtualFrame);
 	}
 	
-	@Specialization(contains = {"readLong", "readBoolean", "readObject"})
+	@Specialization(rewriteOn = FrameSlotTypeException.class)
 	protected Object readObject(VirtualFrame virtualFrame)
+	    throws FrameSlotTypeException
+	{
+		return this.readUpStack(Frame::getObject, virtualFrame);
+	}
+	
+	@Specialization(contains = {"readLong", "readBoolean", "readObject"})
+	protected Object read(VirtualFrame virtualFrame)
 	{
 		try
 		{

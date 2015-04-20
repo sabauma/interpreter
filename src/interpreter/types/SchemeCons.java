@@ -1,24 +1,19 @@
 package interpreter.types;
 
-import interpreter.node.AppNode;
-import interpreter.node.LambdaNode;
-import interpreter.node.QuoteNode;
-import interpreter.node.SchemeNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SchemeCons extends SchemeList
 {
-	public final SchemeObject car;
-	public final SchemeObject cdr;
+	public final Object car;
+	public final Object cdr;
 	
-	public static SchemeCons cons(SchemeObject car, SchemeObject cdr)
+	public static SchemeCons cons(Object car, Object cdr)
 	{
 		return new SchemeCons(car, cdr);
 	}
 	
-	public SchemeCons(SchemeObject car, SchemeObject cdr)
+	public SchemeCons(Object car, Object cdr)
 	{
 		this.car = car;
 		this.cdr = cdr;
@@ -28,7 +23,7 @@ public class SchemeCons extends SchemeList
 	public int length()
 	{
 		int i = 1;
-		SchemeObject cur = this.cdr;
+		Object cur = this.cdr;
 		while (cur instanceof SchemeCons)
 		{
 			cur = ((SchemeCons) cur).cdr;
@@ -36,51 +31,12 @@ public class SchemeCons extends SchemeList
 		}
 		return i;
 	}
-	
-	public SchemeNode asCode()
-	{
-		List<SchemeObject> view = this.arrayView();
-		SchemeObject car = this.car;
-		
-		if (car.equals(SchemeSymbol.QUOTE))
-		{
-			assert view.size() == 2;
-			// parse quote
-			return new QuoteNode(view.get(1));
-		}
-		if (car.equals(SchemeSymbol.LET))
-		{
-			assert view.size() == 3;
-			// parse let
-		}
-		if (car.equals(SchemeSymbol.LAMBDA))
-		{
-			assert view.size() == 3;
-			// parse lambda
-			SchemeObject bindings = view.get(1);
-			if (!(bindings instanceof SchemeList))
-			{
-				throw new IllegalArgumentException("malformed let expression");
-			}
-			List<SchemeObject> bindingsArr = ((SchemeList) bindings).arrayView();
-			return new LambdaNode(bindingsArr, view.get(2).asCode());
-		}
-		view = view.subList(1, view.size());
-		
-		SchemeNode[] args = new SchemeNode[view.size()];
-		for (int i = 0; i < view.size(); ++i)
-		{
-			args[i] = view.get(i).asCode();
-		}
-		// parse application
-		return new AppNode(car.asCode(), args);
-	}
 
 	@Override
-	public List<SchemeObject> arrayView()
+	public List<Object> arrayView()
 	{
-		ArrayList<SchemeObject> retval = new ArrayList<SchemeObject>();
-		SchemeObject cur = this.cdr;
+		ArrayList<Object> retval = new ArrayList<Object>();
+		Object cur = this.cdr;
 		retval.add(this.car);
 		while (cur instanceof SchemeCons)
 		{
