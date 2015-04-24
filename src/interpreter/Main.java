@@ -1,8 +1,10 @@
 package interpreter;
 
 import interpreter.node.BuiltinNode;
-import interpreter.node.AddNode;
 import interpreter.node.AddNodeFactory;
+import interpreter.node.CarNodeFactory;
+import interpreter.node.CdrNodeFactory;
+import interpreter.node.ConsNodeFactory;
 import interpreter.node.SchemeNode;
 import interpreter.reader.Converter;
 import interpreter.reader.Reader;
@@ -28,6 +30,12 @@ public class Main
                 new Object[] {}, fd);
         frame.setObject(fd.addFrameSlot("+"),
                 BuiltinNode.createBuiltinFunction(AddNodeFactory.getInstance(), frame));
+        frame.setObject(fd.addFrameSlot("cons"),
+                BuiltinNode.createBuiltinFunction(ConsNodeFactory.getInstance(), frame));
+        frame.setObject(fd.addFrameSlot("car"),
+                BuiltinNode.createBuiltinFunction(CarNodeFactory.getInstance(), frame));
+        frame.setObject(fd.addFrameSlot("cdr"),
+                BuiltinNode.createBuiltinFunction(CdrNodeFactory.getInstance(), frame));
         return frame;
     }
     
@@ -42,7 +50,7 @@ public class Main
         return function.callTarget.call(new Object[] {globalScope});
     }
 
-    public static String input = "((lambda (x) (+ x x)) 1)";
+    public static String input = "((lambda (x) (cdr (cons x x))) 1)";
 
     public static void main(String[] args) throws IOException
     {

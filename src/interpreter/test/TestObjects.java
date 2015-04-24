@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 
 import interpreter.env.BuiltinFunctions;
 import interpreter.env.Environment;
-import interpreter.node.AppNode;
 import interpreter.node.LambdaNode;
 import interpreter.node.SchemeNode;
 import interpreter.node.QuoteNode;
+import interpreter.node.call.AppNode;
 import interpreter.reader.Reader;
 import interpreter.types.SchemeInt;
 import interpreter.types.SchemeBoolean;

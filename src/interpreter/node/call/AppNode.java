@@ -1,9 +1,11 @@
-package interpreter.node;
+package interpreter.node.call;
 
+import interpreter.node.SchemeNode;
 import interpreter.types.SchemeClosure;
 
 import java.util.Arrays;
 
+import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.dsl.UnsupportedSpecializationException;
@@ -43,8 +45,25 @@ public class AppNode extends SchemeNode
         {
             args[i + 1] = this.rands[i].execute(virtualFrame);
         }
-
-        return this.callNode.call(virtualFrame, func.callTarget, args);
+        
+        if (this.isTail)
+        {
+            throw new TailCallException(func.callTarget, args);
+        }
+        
+        CallTarget target = func.callTarget;
+        while (true)
+        {
+            try
+            {
+                return this.callNode.call(virtualFrame, target, args);
+            }
+            catch (TailCallException tce)
+            {
+                target = tce.func;
+                args   = tce.args;
+            }
+        }
     }
 
     private SchemeClosure evaluateRator(VirtualFrame virtualFrame)
@@ -52,7 +71,8 @@ public class AppNode extends SchemeNode
         try
         {
             return this.rator.executeSchemeClosure(virtualFrame);
-        } catch (UnexpectedResultException e)
+        }
+        catch (UnexpectedResultException e)
         {
             throw new UnsupportedSpecializationException(this,
                     new Node[] { this.rator }, e);
