@@ -42,15 +42,16 @@ public class Main
         return function.callTarget.call(new Object[] {globalScope});
     }
 
-    public static String input = "(+ 1 2)";
+    public static String input = "((lambda (x) (+ x x)) 1)";
 
     public static void main(String[] args) throws IOException
     {
         InputStream istream = new ByteArrayInputStream(
                 input.getBytes(StandardCharsets.UTF_8));
-        Object n = Reader.readExpr(istream);
-        SchemeNode node = Converter.convert(n, new FrameDescriptor());
+        Object n         = Reader.readExpr(istream);
         VirtualFrame top = createTopFrame(new FrameDescriptor());
+        SchemeNode node  = Converter.convert(n, top.getFrameDescriptor());
+        
         
         System.out.println(n.toString());
         System.out.println(node.toString());

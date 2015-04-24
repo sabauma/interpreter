@@ -13,15 +13,13 @@ import com.oracle.truffle.api.nodes.IndirectCallNode;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
 
-public class AppNode extends SchemeNode {
+public class AppNode extends SchemeNode
+{
     private boolean isTail;
 
-    @Child
-    protected SchemeNode rator;
-    @Children
-    protected final SchemeNode[] rands;
-    @Child
-    protected IndirectCallNode callNode;
+    @Child    protected SchemeNode rator;
+    @Children protected final SchemeNode[] rands;
+    @Child    protected IndirectCallNode callNode;
 
     public AppNode(SchemeNode rator, SchemeNode[] rands)
     {
@@ -49,7 +47,8 @@ public class AppNode extends SchemeNode {
         return this.callNode.call(virtualFrame, func.callTarget, args);
     }
 
-    private SchemeClosure evaluateRator(VirtualFrame virtualFrame) {
+    private SchemeClosure evaluateRator(VirtualFrame virtualFrame)
+    {
         try
         {
             return this.rator.executeSchemeClosure(virtualFrame);

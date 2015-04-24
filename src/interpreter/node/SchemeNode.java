@@ -26,39 +26,42 @@ public abstract class SchemeNode extends Node
 	public long executeLong(VirtualFrame virtualFrame)
 		throws UnexpectedResultException
 	{
-		return SchemeTypesGen.SCHEMETYPES.expectLong(this.execute(virtualFrame));
+		return SchemeTypesGen.expectLong(this.execute(virtualFrame));
+	}
+	
+	public double executeFloat(VirtualFrame virtualFrame)
+	    throws UnexpectedResultException
+	{
+	    return SchemeTypesGen.expectDouble(this.execute(virtualFrame));
 	}
 	
 	public boolean executeBoolean(VirtualFrame virtualFrame)
 			throws UnexpectedResultException
 	{
-		return SchemeTypesGen.SCHEMETYPES.expectBoolean(this.execute(virtualFrame));
+		return SchemeTypesGen.expectBoolean(this.execute(virtualFrame));
 	}
 	
 	public SchemeClosure executeSchemeClosure(VirtualFrame virtualFrame)
 			throws UnexpectedResultException
 	{
-		return SchemeTypesGen.SCHEMETYPES.expectSchemeClosure(
-				this.execute(virtualFrame));
+		return SchemeTypesGen.expectSchemeClosure(this.execute(virtualFrame));
 	}
 	
 	public SchemeCons executeSchemeCons(VirtualFrame virtualFrame)
 			throws UnexpectedResultException
 	{
-		return SchemeTypesGen.SCHEMETYPES.expectSchemeCons(
-				this.execute(virtualFrame));
+		return SchemeTypesGen.expectSchemeCons(this.execute(virtualFrame));
 	}
 	
 	public SchemeNil executeSchemeNil(VirtualFrame virtualFrame)
 			throws UnexpectedResultException
 	{
-		return SchemeTypesGen.SCHEMETYPES.expectSchemeNil(
-				this.execute(virtualFrame));
+		return SchemeTypesGen.expectSchemeNil(this.execute(virtualFrame));
 	}
 	
 	protected boolean isArgumentIndexInRange(VirtualFrame env, int index)
 	{
-		return index < env.getArguments().length - 1;
+		return (index + 1) < env.getArguments().length;
 	}
 	
 	protected Object getArgument(VirtualFrame env, int index)
@@ -71,7 +74,7 @@ public abstract class SchemeNode extends Node
 		Object[] args = frame.getArguments();
 		if (args.length > 0)
 		{
-			return (MaterializedFrame) frame.getArguments()[0];
+			return (MaterializedFrame) args[0];
 		}
 		return null;
 	}
