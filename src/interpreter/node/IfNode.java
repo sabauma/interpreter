@@ -6,9 +6,9 @@ import com.oracle.truffle.api.utilities.ConditionProfile;
 
 public class IfNode extends SchemeNode
 {
-	@Child private final SchemeNode tst;
-	@Child private final SchemeNode thn;
-	@Child private final SchemeNode alt;
+	@Child private SchemeNode tst;
+	@Child private SchemeNode thn;
+	@Child private SchemeNode alt;
 	
 	private final ConditionProfile conditionProfile =
 			ConditionProfile.createBinaryProfile();
@@ -41,8 +41,7 @@ public class IfNode extends SchemeNode
 		}
 		catch (UnexpectedResultException e)
 		{
-			this.tst.execute(env);
-			return false;
+			return this.tst.execute(env) != Boolean.FALSE;
 		}
 	}
 	

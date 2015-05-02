@@ -11,13 +11,36 @@ import java.io.PushbackReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reader {
-    public static Object read(InputStream istream) throws IOException {
+public class Reader
+{
+    public static Object read(InputStream istream) throws IOException
+    {
         return read(new PushbackReader(new InputStreamReader(istream)));
     }
 
-    public static Object readExpr(InputStream istream) throws IOException {
+    public static Object readExpr(InputStream istream) throws IOException
+    {
         return readNode(new PushbackReader(new InputStreamReader(istream)));
+    }
+    
+    public static Object[] readProgram(InputStream istream) throws IOException
+    {
+        PushbackReader reader = new PushbackReader(new InputStreamReader(istream));
+        List<Object> vals = new ArrayList<>();
+        
+        while (true)
+        {
+            Reader.eatWhitespace(reader);
+            int val = reader.read();
+            if (val == -1 || val == 65535)
+            {
+                break;
+            }
+            reader.unread(val);
+            vals.add(readNode(reader));
+        }
+        
+        return vals.toArray();
     }
 
     private static Object read(PushbackReader pstream) throws IOException {

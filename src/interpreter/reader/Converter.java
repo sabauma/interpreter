@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import interpreter.node.BooleanNode;
 import interpreter.node.DefineNode;
 import interpreter.node.DefineNodeGen;
 import interpreter.node.FloatNode;
@@ -15,6 +14,7 @@ import interpreter.node.LambdaNodeGen;
 import interpreter.node.QuoteNode;
 import interpreter.node.QuoteNode.QuoteKind;
 import interpreter.node.call.AppNode;
+import interpreter.node.prims.BooleanNode;
 import interpreter.node.QuoteNodeGen;
 import interpreter.node.SchemeNode;
 import interpreter.node.VarNode;
@@ -43,6 +43,16 @@ public class Converter
 			return convert((SchemeList) obj, desc);
 		
 		throw new IllegalArgumentException("Unknown type: " + obj.getClass());
+	}
+	
+	public static SchemeNode[] convertArray(Object[] obj, FrameDescriptor desc)
+	{
+	    SchemeNode[] arr = new SchemeNode[obj.length];
+	    for (int i = 0; i < obj.length; ++i)
+	    {
+	        arr[i] = Converter.convert(obj[i], desc);
+	    }
+	    return arr;
 	}
 	
 	public static IntNode convert(long n, FrameDescriptor desc)
@@ -105,7 +115,7 @@ public class Converter
 	
 	public static LambdaNode convertLambda(List<Object> list, FrameDescriptor d)
 	{
-		FrameDescriptor env     = d.copy(); //new FrameDescriptor();
+		FrameDescriptor env     = d; //new FrameDescriptor();
 		List<FrameSlot> formals = new ArrayList<>();
 		for (Object arg : ((SchemeList) list.get(1)).arrayView())
 		{

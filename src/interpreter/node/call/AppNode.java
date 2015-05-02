@@ -51,7 +51,13 @@ public class AppNode extends SchemeNode
             throw new TailCallException(func.callTarget, args);
         }
         
-        CallTarget target = func.callTarget;
+        return this.call(virtualFrame, func.callTarget, args);
+    }
+    
+    // This code cannot go into the execute method, as the Explode loop
+    // annotation will try to unroll it.
+    private Object call(VirtualFrame virtualFrame, CallTarget target, Object[] args)
+    {
         while (true)
         {
             try
