@@ -1,10 +1,13 @@
 package interpreter.node;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.dsl.NodeField;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.frame.Frame;
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
+import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 @NodeField(name = "slot", type = FrameSlot.class)
@@ -18,20 +21,42 @@ public abstract class VarNode extends SchemeNode
 			throws FrameSlotTypeException;
 	}
 	
-	public <T> T readUpStack(FrameGet<T> getter, Frame frame)
+	public <T> T readUpStack(FrameGet<T> getter, VirtualFrame virtualFrame)
 		throws FrameSlotTypeException
 	{
-		T value = getter.get(frame, this.getSlot());
+	    FrameSlot slot = this.getSlot();
+	    Object identifier = slot.getIdentifier();
+		T value = getter.get(virtualFrame, slot);
+		if (value != null)
+		{
+		    return value;
+		}
+		
+		CompilerDirectives.transferToInterpreterAndInvalidate();
+		MaterializedFrame frame = getLexicalScope(virtualFrame);
 		while (value == null)
 		{
-			frame = this.getPreviousFrame(frame);
+			FrameDescriptor desc = frame.getFrameDescriptor();
+			slot = desc.findFrameSlot(identifier);
+			if (slot != null)
+			{
+			    value = getter.get(frame, slot);
+			}
+			
+			if (value != null)
+			{
+			    break;
+			}
+			
+			frame = getLexicalScope(frame);
 			if (frame == null)
 			{
-				throw new RuntimeException("Unknown variable: " +
-						this.getSlot().getIdentifier());
+			    CompilerDirectives.transferToInterpreterAndInvalidate();
+			    throw new RuntimeException("Unknown identifier" + identifier);
 			}
-			value = getter.get(frame,  this.getSlot());
 		}
+		
+		this.replace(LexicalReadNodeGen.create(frame, slot));
 		return value;
 	}
 	
@@ -68,11 +93,6 @@ public abstract class VarNode extends SchemeNode
 			// This should never happen
 		}
 		return null;
-	}
-	
-	private Frame getPreviousFrame(Frame frame)
-	{
-		return (Frame) frame.getArguments()[0];
 	}
 	
 	public String toString()

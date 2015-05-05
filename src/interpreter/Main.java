@@ -17,8 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.FrameSlot;
@@ -64,7 +62,7 @@ public class Main
     public static String P = "(lambda (fib) (lambda (n) (if (<= n 1) 1 (+ (fib (- n 1)) (fib (- n 2))))))";
     public static String FIB = "(define fib (lambda (n) (if (<= n 1) 1 (+ (fib (- n 1)) (fib (- n 2))))))";
     public static String FIBN = "(fib 30)";
-    public static String TIME = "(define start (now)) (fib 30) (define end (now)) (- end start)";
+    public static String TIME = "(define start (now)) (fib 40) (define end (now)) (- end start)";
     public static String PROGRAM = FIB + " " + FIBN + FIBN + FIBN + TIME;
 
     public static void main(String[] args) throws IOException
@@ -76,10 +74,7 @@ public class Main
         VirtualFrame top  = createTopFrame(new FrameDescriptor());
         SchemeNode[] node = Converter.convertArray(n, top.getFrameDescriptor());
         
-//        System.out.println(Arrays.toString(n));
-//        System.out.println(node.toString());
-        
         Object v = execute(node, top);
-        System.out.println("Execution time: " + (Long) v / 1000000L + "s");
+        System.out.println("Execution time: " + (Long) v / 1000000L + "ms");
     }
 }
