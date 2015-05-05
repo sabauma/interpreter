@@ -10,6 +10,12 @@ public class FloatNode extends SchemeNode
 	{
 		this.value = value;
 	}
+	
+	@Override
+	public double executeFloat(VirtualFrame env)
+	{
+	    return this.value;
+	}
 
 	@Override
 	public Object execute(VirtualFrame env)
